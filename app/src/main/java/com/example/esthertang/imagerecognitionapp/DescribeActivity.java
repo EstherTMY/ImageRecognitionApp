@@ -120,6 +120,11 @@ public class DescribeActivity extends ActionBarActivity {
     private ImageView imageView3;
     private ImageView imageView4;
 
+    private Field field1;
+    private Field field2;
+    private Field field3;
+    private Field field4;
+
     String itemName;
     String chineseName;
 
@@ -148,10 +153,7 @@ public class DescribeActivity extends ActionBarActivity {
         imageView4 = (ImageView) findViewById(R.id.ImageView4);
 
         Class drawable = R.drawable.class;
-        Field field1 = null;
-        Field field2 = null;
-        Field field3 = null;
-        Field field4 = null;
+
         try {
             field1 = drawable.getField(itemName+"imageview1");
             field2 = drawable.getField(itemName+"imageview2");
