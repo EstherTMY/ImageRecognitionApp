@@ -41,6 +41,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Bitmap;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -95,6 +97,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.HashMap;
 
 public class DescribeActivity extends ActionBarActivity {
 
@@ -128,6 +131,10 @@ public class DescribeActivity extends ActionBarActivity {
     String itemName;
     String chineseName;
 
+    SoundPool soundPool;
+    //定义一个HashMap用于存放音频流的ID
+    HashMap<Integer, Integer> musicId=new HashMap<Integer, Integer>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,7 +145,7 @@ public class DescribeActivity extends ActionBarActivity {
         }else if(itemName.equals("shoes")){
             chineseName = "鞋子";
         }else if(itemName.equals("bottle")){
-            chineseName = "水杯";
+            chineseName = "瓶子";
         }
         setContentView(R.layout.activity_describe);
 
@@ -168,6 +175,12 @@ public class DescribeActivity extends ActionBarActivity {
             imageView3.setBackgroundResource(res_ID3);
             imageView4.setBackgroundResource(res_ID4);
         } catch (Exception e) {}
+        soundPool=new SoundPool(12, 0,5);
+        //通过load方法加载指定音频流，并将返回的音频ID放入musicId中
+        musicId.put(1, soundPool.load(this, R.raw.tip, 1));
+        musicId.put(2, soundPool.load(this, R.raw.good, 1));
+        musicId.put(3, soundPool.load(this, R.raw.tryagain, 1));
+        soundPool.play(musicId.get(1),1,1, 0, 0, 1);
 
 
 //        if(itemName.equals("bag")) {
@@ -225,6 +238,7 @@ public class DescribeActivity extends ActionBarActivity {
         intent = new Intent(DescribeActivity.this, SelectImageActivity.class);
         startActivityForResult(intent, REQUEST_SELECT_IMAGE);
     }
+
 
     // Called when image selection is done.
     @Override
@@ -317,6 +331,7 @@ public class DescribeActivity extends ActionBarActivity {
                 for (String tag: result.description.tags) {
                     if(tag.equals(itemName)){
                         count++;
+                        soundPool.play(musicId.get(2),1,1, 0, 0, 1);
                         AlertDialog.Builder dialog = new AlertDialog.Builder(DescribeActivity.this);
 //              dialog.setIcon(R.drawable.ic_launcher);//窗口头图标
                         dialog.setTitle("恭喜！");//窗口名
@@ -324,14 +339,18 @@ public class DescribeActivity extends ActionBarActivity {
                         dialog.setPositiveButton("Ok",new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 // TODO Auto-generated method stub
-
+                                Intent intent;
+                                intent = new Intent(DescribeActivity.this, MainActivity.class);
+                                startActivity(intent);
                             }
                         });
                         dialog.show();
+
                     }
                 }
 
                 if(count==0){
+                    soundPool.play(musicId.get(3),1,1, 0, 0, 1);
                     AlertDialog.Builder dialog = new AlertDialog.Builder(DescribeActivity.this);
 //              dialog.setIcon(R.drawable.ic_launcher);//窗口头图标
                     dialog.setTitle("抱歉");//窗口名

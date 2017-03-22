@@ -42,8 +42,8 @@
             android:layout_marginTop="20dp"/>
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:text="请选择图片"
         android:layout_below="@+id/ImageView3"
         android:layout_marginTop="40dp"
