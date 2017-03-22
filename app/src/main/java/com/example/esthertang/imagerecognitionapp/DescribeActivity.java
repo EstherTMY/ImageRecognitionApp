@@ -39,6 +39,7 @@ package com.example.esthertang.imagerecognitionapp;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -93,6 +94,7 @@ import com.example.esthertang.imagerecognitionapp.helper.ImageHelper;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
 
 public class DescribeActivity extends ActionBarActivity {
 
@@ -109,18 +111,30 @@ public class DescribeActivity extends ActionBarActivity {
     private Bitmap mBitmap;
 
     // The edit to show status and result.
-    private EditText mEditText;
+//    private EditText mEditText;
 
     private VisionServiceClient client;
 
+    private ImageView imageView1;
+    private ImageView imageView2;
+    private ImageView imageView3;
+    private ImageView imageView4;
+
     String itemName;
+    String chineseName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         itemName = intent.getStringExtra("itemName");
-
+        if(itemName.equals("bag")){
+            chineseName = "背包";
+        }else if(itemName.equals("shoes")){
+            chineseName = "鞋子";
+        }else if(itemName.equals("bottle")){
+            chineseName = "水杯";
+        }
         setContentView(R.layout.activity_describe);
 
         if (client==null){
@@ -128,8 +142,42 @@ public class DescribeActivity extends ActionBarActivity {
         }
 
         mButtonSelectImage = (Button)findViewById(R.id.buttonSelectImage);
-        mEditText = (EditText)findViewById(R.id.editTextResult);
-        mEditText.setText(itemName);
+        imageView1 = (ImageView) findViewById(R.id.ImageView1);
+        imageView2 = (ImageView) findViewById(R.id.ImageView2);
+        imageView3 = (ImageView) findViewById(R.id.ImageView3);
+        imageView4 = (ImageView) findViewById(R.id.ImageView4);
+
+        Class drawable = R.drawable.class;
+        Field field1 = null;
+        Field field2 = null;
+        Field field3 = null;
+        Field field4 = null;
+        try {
+            field1 = drawable.getField(itemName+"imageview1");
+            field2 = drawable.getField(itemName+"imageview2");
+            field3 = drawable.getField(itemName+"imageview3");
+            field4 = drawable.getField(itemName+"imageview4");
+            int res_ID1 = field1.getInt(field1.getName());
+            int res_ID2 = field2.getInt(field2.getName());
+            int res_ID3 = field3.getInt(field3.getName());
+            int res_ID4 = field4.getInt(field4.getName());
+            imageView1.setBackgroundResource(res_ID1);
+            imageView2.setBackgroundResource(res_ID2);
+            imageView3.setBackgroundResource(res_ID3);
+            imageView4.setBackgroundResource(res_ID4);
+        } catch (Exception e) {}
+
+
+//        if(itemName.equals("bag")) {
+//            imageView1.setBackgroundResource(R.drawable.bagimageview1);
+//            imageView2.setBackgroundResource(R.drawable.bagimageview2);
+//            imageView3.setBackgroundResource(R.drawable.bagimageview3);
+//            imageView4.setBackgroundResource(R.drawable.bagimageview4);
+//        }
+
+
+//        mEditText = (EditText)findViewById(R.id.editTextResult);
+//        mEditText.setText(itemName);
     }
 
     @Override
@@ -156,19 +204,20 @@ public class DescribeActivity extends ActionBarActivity {
 
     public void doDescribe() {
         mButtonSelectImage.setEnabled(false);
-        mEditText.setText("Describing...");
+        mButtonSelectImage.setText("正在分析");
+        //mEditText.setText("Describing...");
 
         try {
             new doRequest().execute();
         } catch (Exception e)
         {
-            mEditText.setText("Error encountered. Exception is: " + e.toString());
+            //mEditText.setText("Error encountered. Exception is: " + e.toString());
         }
     }
 
     // Called when the "Select Image" button is clicked.
     public void selectImage(View view) {
-        mEditText.setText("");
+        //mEditText.setText("");
 
         Intent intent;
         intent = new Intent(DescribeActivity.this, SelectImageActivity.class);
@@ -189,12 +238,12 @@ public class DescribeActivity extends ActionBarActivity {
                             mImageUri, getContentResolver());
                     if (mBitmap != null) {
                         // Show the image on screen.
-                        ImageView imageView = (ImageView) findViewById(R.id.selectedImage);
-                        imageView.setImageBitmap(mBitmap);
-
-                        // Add detection log.
-                        Log.d("DescribeActivity", "Image: " + mImageUri + " resized to " + mBitmap.getWidth()
-                                + "x" + mBitmap.getHeight());
+//                        ImageView imageView = (ImageView) findViewById(R.id.selectedImage);
+//                        imageView.setImageBitmap(mBitmap);
+//
+//                        // Add detection log.
+//                        Log.d("DescribeActivity", "Image: " + mImageUri + " resized to " + mBitmap.getWidth()
+//                                + "x" + mBitmap.getHeight());
 
                         doDescribe();
                     }
@@ -245,9 +294,9 @@ public class DescribeActivity extends ActionBarActivity {
             super.onPostExecute(data);
             // Display based on error existence
 
-            mEditText.setText("");
+            //mEditText.setText("");
             if (e != null) {
-                mEditText.setText("Error: " + e.getMessage());
+                //mEditText.setText("Error: " + e.getMessage());
                 this.e = null;
             } else {
                 Gson gson = new Gson();
@@ -268,8 +317,8 @@ public class DescribeActivity extends ActionBarActivity {
                         count++;
                         AlertDialog.Builder dialog = new AlertDialog.Builder(DescribeActivity.this);
 //              dialog.setIcon(R.drawable.ic_launcher);//窗口头图标
-                        dialog.setTitle("Alert");//窗口名
-                        dialog.setMessage("Very good! This image contains "+itemName+".");
+                        dialog.setTitle("恭喜！");//窗口名
+                        dialog.setMessage("非常好! 这张图里有"+chineseName+"!");
                         dialog.setPositiveButton("Ok",new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 // TODO Auto-generated method stub
@@ -283,8 +332,8 @@ public class DescribeActivity extends ActionBarActivity {
                 if(count==0){
                     AlertDialog.Builder dialog = new AlertDialog.Builder(DescribeActivity.this);
 //              dialog.setIcon(R.drawable.ic_launcher);//窗口头图标
-                    dialog.setTitle("Alert");//窗口名
-                    dialog.setMessage("This image not contains "+itemName+", please try again");
+                    dialog.setTitle("抱歉");//窗口名
+                    dialog.setMessage("这张图里没有"+chineseName+", 请再试一次");
                     dialog.setPositiveButton("Ok",new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             // TODO Auto-generated method stub
@@ -300,10 +349,11 @@ public class DescribeActivity extends ActionBarActivity {
 //                mEditText.append("\n--- Raw Data ---\n\n");
 //                mEditText.append(data);
 
-                mEditText.setSelection(0);
+                //mEditText.setSelection(0);
             }
-
             mButtonSelectImage.setEnabled(true);
+            mButtonSelectImage.setText("请选择图片");
+
         }
     }
 }

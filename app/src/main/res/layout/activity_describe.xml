@@ -6,53 +6,53 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.example.esthertang.imagerecognitionapp.DescribeActivity">
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:weightSum="1">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:text="Select an image to analyze"/>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
+            android:text="请拍或选择一张和下列图片同一类的图片"/>
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:id="@+id/ImageView1"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="65dp"
+        />
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:id="@+id/ImageView2"
+            android:layout_toRightOf="@+id/ImageView1"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="65dp"
+        />
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:id="@+id/ImageView3"
+            android:layout_below="@+id/ImageView1"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="10dp"/>
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:id="@+id/ImageView4"
+            android:layout_toRightOf="@+id/ImageView3"
+            android:layout_below="@+id/ImageView2"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="20dp"/>
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Select Image"
-                android:id="@+id/buttonSelectImage"
-                android:onClick="selectImage"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="请选择图片"
+        android:layout_below="@+id/ImageView3"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="120dp"
+        android:id="@+id/buttonSelectImage"
+        android:onClick="selectImage"
+        style="@style/ButtonStyle"/>
 
-            <ImageView
-                android:id="@+id/selectedImage"
-                android:layout_width="200dp"
-                android:layout_height="400dp"
-                android:layout_toEndOf="@+id/image_control"
-                android:layout_toRightOf="@+id/image_control"
-                android:background="#E0E0E0" />
 
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:layout_weight="0.50">
 
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:inputType="textMultiLine"
-                android:ems="10"
-                android:id="@+id/editTextResult"
-                android:layout_weight="1" />
-        </LinearLayout>
-    </LinearLayout>
 
 </RelativeLayout>
